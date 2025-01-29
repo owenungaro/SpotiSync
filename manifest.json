@@ -1,0 +1,14 @@
+{
+    "name": "SpotiSync",
+    "version": "1.0",
+    "description": "SpotiSync lets you instantly convert YouTube audio to MP3 and import it directly into your Spotify library with one click. Discover music on YouTube and seamlessly add it to your Spotify collection.",
+    "manifest_version": 3,
+    "permissions": ["storage"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "host_permissions": ["https://accounts.spotify.com/*", "https://*.googlevideo.com/*"],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    }
+}

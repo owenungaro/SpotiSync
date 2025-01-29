@@ -1,0 +1,34 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"> <!--HTML Brower Support (works with chrome, edge, firefox, safari, etc)-->
+        <title>SpotiSync</title> 
+
+        <script src="popup.js" defer></script> <!--Links popup.js file that handles screen transitions-->
+
+        <!--Hides all screens by default-->
+        <style> 
+            .screen {
+                display: none; 
+            }
+        </style> 
+    </head>
+    <body>
+        <!--folder selectection screen-->
+        <div id="screen-folder" class="screen">
+            <h2>Select Download Folder</h2>
+            <button id="set-folder">Choose Folder</button> <!--button to select download folder-->
+        </div>
+    
+        <!--spotify login screen-->
+        <div id="screen-login" class="screen">
+            <h2>Spotify Login</h2>
+            <button id="login-spotify">Login</button> <!--button for spotify login-->
+        </div>
+    
+        <!--main screen-->
+        <div id="screen-main" class="screen">
+            <h2>Download Songs</h2>
+            <button id="download-song">Download</button> <!--button to download youtube mp3-->
+        </div>
+    </body>
+</html>

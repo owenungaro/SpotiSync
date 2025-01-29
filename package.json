@@ -1,0 +1,20 @@
+{
+  "name": "spotisync",
+  "version": "1.0.0",
+  "main": "callback.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
+    "child_process": "^1.0.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
