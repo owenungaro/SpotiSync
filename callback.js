@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
             spotifyTokenExpiration: expirationTime
         }, () => {
             console.log("Spotify token saved. Closing login tab.");
-            window.close(); //Closes window and then 500ms later opens popup
+            window.close(); //closes window and then 500ms later opens popup
             setTimeout(() => {
                 window.location.href = "popup.html";
             }, 500);

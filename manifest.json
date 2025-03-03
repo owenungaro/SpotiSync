@@ -5,7 +5,17 @@
     "manifest_version": 3,
     "permissions": ["storage", "scripting", "activeTab"],
     "action": {
+      "default_icon": {
+        "16": "images/SpotiSync16x.png",
+        "48": "images/SpotiSync48x.png",
+        "128": "images/SpotiSync128x.png"
+      },  
       "default_popup": "popup.html"
+    },
+    "icons": {
+      "16": "images/SpotiSync16x.png",
+      "48": "images/SpotiSync48x.png",
+      "128": "images/SpotiSync128x.png"
     },
     "content_security_policy": {
       "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",

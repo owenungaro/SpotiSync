@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => { //Waits for page to fully 
     })
 
     document.getElementById("login-spotify").addEventListener("click", () => { //once spotify login is completed, preference stored in chrome cloud and moves onto main screen
-        const clientId = "1438006dadf84cb6824ddab91f93c586";
+        const clientId = CLIENT_ID; //CLIENT_ID is user sided. Since extension isn't public, this will vary between each user.
         const redirectUri = `chrome-extension://${chrome.runtime.id}/callback.html`; //extension id
         const scope = "user-library-read"; //permissions
 
