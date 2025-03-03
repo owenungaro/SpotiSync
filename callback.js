@@ -4,15 +4,23 @@ document.addEventListener("DOMContentLoaded", () => {
     //get url fragment
     const params = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = params.get("access_token");
+    const expiresIn = params.get("expires_in"); //1 hr
 
-    if(accessToken) {
+    if(accessToken && expiresIn) {
         console.log("Access Token Retrieved:", accessToken);
 
+        const expirationTime = Date.now() + parseInt(expiresIn)*1000; //converts expiresIn to miliseconds
+
         //add to chrome storage
-        chrome.storage.local.set({ spotifyAccessToken: accessToken }, () => {
-            console.log("Spotify token saved! Redirecting to popup...");
-            //redirect
-            window.location.href = "popup.html";
+        chrome.storage.local.set({
+            spotifyAccessToken: accessToken,
+            spotifyTokenExpiration: expirationTime
+        }, () => {
+            console.log("Spotify token saved. Closing login tab.");
+            window.close(); //Closes window and then 500ms later opens popup
+            setTimeout(() => {
+                window.location.href = "popup.html";
+            }, 500);
         });
     } else {
         console.error("No access token found in URL.");

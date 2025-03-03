@@ -1,22 +1,188 @@
 <html lang="en">
     <head>
-        <meta charset="UTF-8"> <!--HTML Brower Support (works with chrome, edge, firefox, safari, etc)-->
-        <title>SpotiSync</title> 
+        <meta charset="UTF-8">
+        <title>SpotiSync</title>
+        
+        <script src="popup.js" defer></script>
+        <script src="lib/ffmpeg.min.js"></script>
+        <script src="lib/ffmpeg-core.js"></script>
+        <script src="js/options.js"></script>
 
-        <script src="popup.js" defer></script> <!--Links popup.js file that handles screen transitions-->
-
-        <!--Hides all screens by default-->
+        <!-- Spotify Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
         <style> 
-            .screen {
-                display: none; 
+            body {
+                background-color: #121212; /*spotify dark background*/
+                color: #fff; /*white text*/
+                font-family: 'Roboto', sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column; /*arrange everything vertically*/
+                height: 75vh;
+                width: 320px; /*Fixed width*/
+                min-width: 320px;
+                max-width: 400px; /* Prevent it from getting too wide */
+                margin-left: auto;
+                margin-right: auto;
             }
-        </style> 
-    </head>
+
+            #screen-main {
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start; /* Aligns everything to the top */
+                flex-grow: 1; /*allow to grow to fit space*/
+                position: relative;
+                align-items: center; /* Center everything horizontally */
+            }
+
+            .profile-container {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                display: flex;
+                align-items: center;
+            }
+
+            .profile-container img {
+                border-radius: 50%; /*makes image round*/
+                width: 30px;
+                height: 30px;
+                margin-right: 10px; /*space between image and text*/
+            }
+
+            h2, h3 {
+                font-weight: 500;
+                color: #1db954; /*spotify green*/
+                font-size: 16px;
+            }
+
+            #settings {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 30px; /*button size*/
+                height: 30px; /*button size*/
+                background-color: #1db954;
+                border: none;
+                color: white;
+                cursor: pointer; /*calls hover when cursor points over*/
+            }
+
+            #settings:hover {
+                background-color: #1ed760; /*lighter green*/
+            }
+
+            button {
+                background-color: #1db954; /*spotify green*/
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                font-size: 14px;
+                border-radius: 30px;
+                cursor: pointer;
+                transition: background-color 0.3s ease; /*smooth color*/
+            }
+
+            button:hover {
+                background-color: #1ed760;
+            }
+
+            .playlist-container {
+                max-height: 200px;
+                overflow-y: auto; /*scroll vertically*/
+                width: 100%;
+                background-color: #181818;
+                border-radius: 10px; /*rounded corners*/
+                padding: 10px;
+                margin-top: 40px; /*adds space between top and playlists*/
+                display: flex;
+                flex-direction: column;
+                align-items: center; /*centers content inside of playlist container*/
+            }
+
+            .playlist-list {
+                list-style-type: none;
+                padding: 0;
+                font-size: 14px;
+                width: 100%; /*takes whole width */
+            }
+
+            .playlist-list li {
+                display: flex;
+                align-items: center;
+                margin: 20px 0;
+                width: 100%;  /*takes whole width */
+                justify-content: space-between; /*make space between the name and checkbox*/
+            }
+
+            .playlist-list .playlist-item {
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+
+            .playlist-list .playlist-item img {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+                border-radius: 5px;
+                border: 2px solid #1db954; /*border around playlist*/
+            }
+
+            .playlist-list .playlist-item .playlist-name {
+                flex-grow: 1; /*name takes available space*/
+                text-align: left; /*name is left aligned*/
+            }
+
+            .playlist-list .playlist-item label {
+                display: flex;
+                align-items: center;
+            }
+
+            .playlist-list .playlist-item input[type="checkbox"] {
+                background-color: #1db954; /*background for checkbox, idk if works*/
+                border: none;
+                width: 20px;
+                height: 20px;
+                margin-left: 10px;
+            }
+
+            .playlist-list li:hover {
+                color: #1ed760;
+            }
+
+            .playlist-container::-webkit-scrollbar {
+                width: 8px; /*width of scrollbar*/
+            }
+
+            .playlist-container::-webkit-scrollbar-thumb {
+                background: rgba(0, 0, 0, 0.8); /*scrollbar thumb*/
+                border-radius: 10px;
+            }
+
+            .playlist-container::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.2); /*transparency*/
+            }
+
+
+            #download-song {
+                margin-top: 10px;
+                align-self: center;
+                margin-bottom: 10px;
+            }
+
+
+        </style>
+    </head>    
     <body>
         <!--folder selectection screen-->
         <div id="screen-folder" class="screen">
             <h2>Select Download Folder</h2>
-            <button id="set-folder">Choose Folder</button> <!--button to select download folder-->
+            <input type="text" id="folder-name" placeholder="Enter folder name">
+            <button id="set-folder">Set Folder</button>
         </div>
     
         <!--spotify login screen-->
@@ -27,8 +193,23 @@
     
         <!--main screen-->
         <div id="screen-main" class="screen">
-            <h2>Download Songs</h2>
+            <div class="profile-container">
+                <img src="" id="profile-pic" alt="Profile Picture" />
+            </div>
+
+            <div class="playlist-container">
+                <h3>Your Playlists</h3>
+                <ul class="playlist-list" id="playlist-list"></ul>
+            </div>
+
             <button id="download-song">Download</button> <!--button to download youtube mp3-->
+            <img src="cogwheel.png" id="settings" alt="Settings" />
+        </div>
+
+        <div id="screen-settings" class="screen">
+            <button id="exit-settings">Back</button>  
+            <button id="logout-spotify">Logout of Spotify</button>
+            <button id="change-folder">Change Download Folder</button>  
         </div>
     </body>
 </html>
